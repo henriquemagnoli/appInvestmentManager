@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnHome"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+    <item
+        android:id="@+id/btnWallet"
+        android:enabled="true"
+        android:icon="@drawable/wallet"
+        android:title="Carteira"/>
+    <item
+        android:id="@+id/btnHistorico"
+        android:enabled="true"
+        android:icon="@drawable/historic"
+        android:title="Histórico"/>
+</menu>
