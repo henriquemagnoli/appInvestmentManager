@@ -28,12 +28,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="E-mail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="E-mail"
             android:layout_marginBottom="10dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -41,12 +41,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtSenha"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="Senha">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Senha"
             android:layout_marginBottom="50dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -60,7 +60,7 @@
         android:backgroundTint="#0F4163"
         android:textColor="@color/white"
         app:cornerRadius="20dp"
-        android:onClick="screenHome"/>
+        android:onClick="screenNavBar"/>
 
     <TextView
         android:id="@+id/textView2"

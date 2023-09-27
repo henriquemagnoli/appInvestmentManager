@@ -1,51 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    tools:context=".fragments.WalletFragment">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="180dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:background="@drawable/header"
-            android:orientation="vertical"
-            android:paddingHorizontal="30dp">
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="Carteira"
-                android:textColor="@color/white"
-                android:textSize="28dp" />
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Valor Aplicado"
-                android:textColor="@color/white"
-                android:layout_marginTop="35dp"/>
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="R$ 1.000,00"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="20dp"/>
-        </LinearLayout>
-    </RelativeLayout>
-
+    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
@@ -58,13 +19,13 @@
             android:id="@+id/txtProcurarAtivo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Procurar Ativo"
             app:startIconDrawable="@drawable/lupa"
             app:startIconContentDescription="Busca o ativo que for digitado">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Procurar Ativo"
                 android:layout_marginBottom="10dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -168,13 +129,5 @@
 
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#0F4163"
-        app:menu="@menu/bottom_navigation_menu"
-        app:itemTextColor="@color/white"
-        app:itemIconTint="@color/white"/>
 
-</LinearLayout>
+</FrameLayout>
