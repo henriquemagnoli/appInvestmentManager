@@ -7,13 +7,14 @@
     tools:context=".fragments.WalletFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:id="@+id/content"
+
+    <!--<LinearLayout
+        android:id="@+id/contentWallet"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingHorizontal="30dp">
+        android:paddingHorizontal="30dp">-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/txtProcurarAtivo"
@@ -35,6 +36,7 @@
             android:id="@+id/btnEntrar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="80dp"
             android:text="Adicionar Ativo"
             android:backgroundTint="#FFC749"
             android:textColor="@color/black"
@@ -47,7 +49,7 @@
             android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="150dp"
             android:backgroundTint="#ECEDF0">
 
             <LinearLayout
@@ -127,7 +129,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
 </FrameLayout>

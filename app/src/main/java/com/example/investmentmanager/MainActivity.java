@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.investmentmanager.fragments.HistoryFragment;
 import com.example.investmentmanager.fragments.HomeFragment;
 import com.example.investmentmanager.fragments.WalletFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void screenNavBar(View view)
     {
+        /*TextView titulo = findViewById(R.id.titulo);
+        TextView subTitulo = findViewById(R.id.subTitulo);
+        TextView valorAplicado = findViewById(R.id.valorAplicado);*/
+
         setContentView(R.layout.main);
 
         BottomNavigationView bottomNav = findViewById(R.id.navBar);
@@ -51,16 +58,28 @@ public class MainActivity extends AppCompatActivity {
                 if(id == R.id.btnHome)
                 {
                     setFragment(new HomeFragment());
+                    /*titulo.setText("Home");
+                    subTitulo.setText("Valor aplicado");
+                    valorAplicado.setText("R$ 1.000,00");*/
+
                     return true;
                 }
                 else if (id == R.id.btnWallet)
                 {
                     setFragment(new WalletFragment());
+                    /*titulo.setText("Carteira");
+                    subTitulo.setText("Valor aplicado");
+                    valorAplicado.setText("R$ 1.000,00");*/
+
                     return true;
                 }
                 else if (id == R.id.btnHistorico)
                 {
                     setFragment(new HistoryFragment());
+                    /*titulo.setText("Histórico");
+                    subTitulo.setText("Exibe o histórico de lançamentos de compras de ativos");
+                    valorAplicado.setText("");*/
+
                     return true;
                 }
 
