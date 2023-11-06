@@ -9,22 +9,33 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.example.investmentmanager.fragments.HistoryFragment;
 import com.example.investmentmanager.fragments.HomeFragment;
 import com.example.investmentmanager.fragments.WalletFragment;
+import com.example.investmentmanager.helpers.Helpers;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
+    public static String urlApi = "http://localhost:8181";
+    public static RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestQueue = com.android.volley.toolbox.Volley.newRequestQueue(getApplicationContext());
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -40,14 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void screenNavBar(View view)
     {
-        /*TextView titulo = findViewById(R.id.titulo);
-        TextView subTitulo = findViewById(R.id.subTitulo);
-        TextView valorAplicado = findViewById(R.id.valorAplicado);*/
-
         setContentView(R.layout.main);
 
         BottomNavigationView bottomNav = findViewById(R.id.navBar);
-        setFragment(new HomeFragment());
+        setFragment(new HomeFragment(), "Home", "Valor Aplicado", "R$ 1.000,00");
 
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -57,29 +64,17 @@ public class MainActivity extends AppCompatActivity {
 
                 if(id == R.id.btnHome)
                 {
-                    setFragment(new HomeFragment());
-                    /*titulo.setText("Home");
-                    subTitulo.setText("Valor aplicado");
-                    valorAplicado.setText("R$ 1.000,00");*/
-
+                    setFragment(new HomeFragment(), "Home", "Valor Aplicado", "R$ 1.000,00");
                     return true;
                 }
                 else if (id == R.id.btnWallet)
                 {
-                    setFragment(new WalletFragment());
-                    /*titulo.setText("Carteira");
-                    subTitulo.setText("Valor aplicado");
-                    valorAplicado.setText("R$ 1.000,00");*/
-
+                    setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
                     return true;
                 }
                 else if (id == R.id.btnHistorico)
                 {
-                    setFragment(new HistoryFragment());
-                    /*titulo.setText("Histórico");
-                    subTitulo.setText("Exibe o histórico de lançamentos de compras de ativos");
-                    valorAplicado.setText("");*/
-
+                    setFragment(new HistoryFragment(), "Histórico", "Exibe o histórico de lançamentos de compras de ativos.", "");
                     return true;
                 }
 
@@ -88,8 +83,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void setFragment(Fragment fragment)
+    void setFragment(Fragment fragment, String title, String subTitle, String apliedValue)
     {
+        ((android.widget.TextView) findViewById(R.id.titulo)).setText(title);
+        ((android.widget.TextView) findViewById(R.id.subTitulo)).setText(subTitle);
+        ((android.widget.TextView) findViewById(R.id.valorAplicado)).setText(apliedValue);
+
         FragmentTransaction fragTrans = getSupportFragmentManager().beginTransaction();
         fragTrans.replace(R.id.main_frame, fragment);
         fragTrans.addToBackStack(null);
@@ -97,4 +96,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void screenAddStock(View view) {setContentView(R.layout.addstock_screen);}
+
+    public void authLogin(View view) throws Exception
+    {
+        Button btnEntrar = findViewById(R.id.btnEntrar);
+
+        String email = String.valueOf(((TextInputLayout) findViewById(R.id.txtEmail)).getEditText().getText());
+        String password = String.valueOf(((TextInputLayout) findViewById(R.id.txtSenha)).getEditText().getText());
+
+        if(!email.equals(""))
+        {
+            if(!Helpers.validateRegexEmail())
+            {
+                Helpers.alert(MainActivity.this, "Atenção", "Formato do e-mail inválido.", "Ok", true);
+                return;
+            }
+        }
+        else
+        {
+            Helpers.alert(MainActivity.this, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if(password.equals(""))
+        {
+            Helpers.alert(MainActivity.this, "Atenção", "O campo da senha deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        screenNavBar(view);
+    }
 }
