@@ -14,20 +14,24 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.investmentmanager.fragments.HistoryFragment;
 import com.example.investmentmanager.fragments.HomeFragment;
 import com.example.investmentmanager.fragments.WalletFragment;
 import com.example.investmentmanager.helpers.Helpers;
+import com.example.investmentmanager.http.VolleyRequests;
+import com.example.investmentmanager.interfaces.IVolleyCallback;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity
-{
-    public static String urlApi = "http://localhost:8181";
+public class MainActivity extends AppCompatActivity {
+    public static String urlApi = "http://127.0.0.1:8181";
     public static RequestQueue requestQueue;
 
     @Override
@@ -47,10 +51,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void screenLogin(View view) {setContentView(R.layout.login_screen);}
+
     public void screenSignUp(View view) {setContentView(R.layout.signup_screen);}
 
-    public void screenNavBar(View view)
-    {
+    public void screenAddStock(View view) {setContentView(R.layout.addstock_screen);}
+
+    public void screenNavBar(View view) {
         setContentView(R.layout.main);
 
         BottomNavigationView bottomNav = findViewById(R.id.navBar);
@@ -62,29 +68,22 @@ public class MainActivity extends AppCompatActivity
 
                 int id = item.getItemId();
 
-                if(id == R.id.btnHome)
-                {
+                if (id == R.id.btnHome) {
                     setFragment(new HomeFragment(), "Home", "Valor Aplicado", "R$ 1.000,00");
                     return true;
-                }
-                else if (id == R.id.btnWallet)
-                {
+                } else if (id == R.id.btnWallet) {
                     setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
                     return true;
-                }
-                else if (id == R.id.btnHistorico)
-                {
+                } else if (id == R.id.btnHistorico) {
                     setFragment(new HistoryFragment(), "Histórico", "Exibe o histórico de lançamentos de compras de ativos.", "");
                     return true;
                 }
-
                 return false;
             }
         });
     }
 
-    void setFragment(Fragment fragment, String title, String subTitle, String apliedValue)
-    {
+    void setFragment(Fragment fragment, String title, String subTitle, String apliedValue) {
         ((android.widget.TextView) findViewById(R.id.titulo)).setText(title);
         ((android.widget.TextView) findViewById(R.id.subTitulo)).setText(subTitle);
         ((android.widget.TextView) findViewById(R.id.valorAplicado)).setText(apliedValue);
@@ -95,35 +94,117 @@ public class MainActivity extends AppCompatActivity
         fragTrans.commit();
     }
 
-    public void screenAddStock(View view) {setContentView(R.layout.addstock_screen);}
-
-    public void authLogin(View view) throws Exception
-    {
+    /*
+    * =======================================================================
+    * Funções de Usuario
+    * =======================================================================
+    */
+    public void authLogin(View view) throws Exception {
         Button btnEntrar = findViewById(R.id.btnEntrar);
 
         String email = String.valueOf(((TextInputLayout) findViewById(R.id.txtEmail)).getEditText().getText());
         String password = String.valueOf(((TextInputLayout) findViewById(R.id.txtSenha)).getEditText().getText());
 
-        if(!email.equals(""))
-        {
-            if(!Helpers.validateRegexEmail())
-            {
+        if (!email.equals("")) {
+            if (!Helpers.validateRegexEmail(email)) {
                 Helpers.alert(MainActivity.this, "Atenção", "Formato do e-mail inválido.", "Ok", true);
                 return;
             }
-        }
-        else
-        {
+        } else {
             Helpers.alert(MainActivity.this, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
             return;
         }
 
-        if(password.equals(""))
-        {
+        if (password.equals("")) {
             Helpers.alert(MainActivity.this, "Atenção", "O campo da senha deve ser preenchido.", "Ok", true);
             return;
         }
 
-        screenNavBar(view);
+        requestQueue.add((new VolleyRequests()).sendRequestPOST("/login", Helpers.getLoginData(email, password), new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                try {
+                    if (response.getString("type").equals("Received"))
+                        screenNavBar(view);
+                } catch (Exception ex) {
+                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+        }));
+    }
+
+    public void createAccount(View view) throws Exception
+    {
+        String fullName = String.valueOf(((TextInputLayout) findViewById(R.id.txtNomeCompleto)).getEditText().getText());
+        String cellPhone = String.valueOf(((TextInputLayout) findViewById(R.id.txtTelefone)).getEditText().getText());
+        String email = String.valueOf(((TextInputLayout) findViewById(R.id.txtEmail)).getEditText().getText());
+        String cpf = String.valueOf(((TextInputLayout) findViewById(R.id.txtCpf)).getEditText().getText());
+        String password = String.valueOf(((TextInputLayout) findViewById(R.id.txtSenha)).getEditText().getText());
+        String date = String.valueOf(((TextInputLayout) findViewById(R.id.txtData)).getEditText().getText());
+
+        if(fullName.equals("")){
+            Helpers.alert(MainActivity.this, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if(cellPhone.equals("")){
+            Helpers.alert(MainActivity.this, "Atenção", "Campo do telefone deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if (!email.equals("")) {
+            if (!Helpers.validateRegexEmail(email)) {
+                Helpers.alert(MainActivity.this, "Atenção", "Formato do e-mail inválido.", "Ok", true);
+                return;
+            }
+        }
+        else {
+            Helpers.alert(MainActivity.this, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if(!cpf.equals("")){
+           if(!Helpers.validateCpf(cpf)){
+               Helpers.alert(MainActivity.this, "Atenção", "Formato do cpf inválido.", "Ok", true);
+               return;
+           }
+        }
+        else{
+            Helpers.alert(MainActivity.this, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if(password.equals("")){
+            Helpers.alert(MainActivity.this, "Atenção", "Campo da senha deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        if(date.equals("")){
+            Helpers.alert(MainActivity.this, "Atenção", "Campo da data de nascimento deve ser preenchido.", "Ok", true);
+            return;
+        }
+
+        requestQueue.add((new VolleyRequests().sendRequestPOST("/usuarios", Helpers.getCreateAccountData(fullName, cellPhone, email, cpf, password, date), new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                try {
+                    if(response.getString("type").equals("Received"))
+                        screenLogin(view);
+                }
+                catch (Exception ex){
+                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+        })));
     }
 }
