@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +86,7 @@ public class VolleyRequests implements IRequest
     }
 
     @Override
-    public JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback, String filter) throws UnsupportedOperationException {
+    public JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback) throws UnsupportedOperationException {
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
                 MainActivity.urlApi + path,

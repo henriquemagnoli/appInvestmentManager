@@ -11,6 +11,7 @@ import java.util.Map;
 public interface IRequest
 {
     JsonObjectRequest sendRequestPOST(String path, JSONObject jsonObject, IVolleyCallback callback) throws UnsupportedOperationException;
-    JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback, String filter) throws UnsupportedOperationException;
+    JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback) throws UnsupportedOperationException;
+
     StringRequest sendRequestPUT(String path, Map params) throws UnsupportedOperationException;
 }

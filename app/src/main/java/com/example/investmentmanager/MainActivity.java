@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                     Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
                 }
             }
-
             @Override
             public void onError(JSONObject response) throws JSONException {
                 Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);

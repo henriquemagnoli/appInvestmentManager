@@ -3,12 +3,25 @@ package com.example.investmentmanager.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.investmentmanager.MainActivity;
 import com.example.investmentmanager.R;
+import com.example.investmentmanager.helpers.Helpers;
+import com.example.investmentmanager.http.VolleyRequests;
+import com.example.investmentmanager.interfaces.IVolleyCallback;
+import com.example.investmentmanager.models.Stocks;
+import com.example.investmentmanager.models.StocksAdapter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,9 +39,10 @@ public class WalletFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public WalletFragment() {
-        // Required empty public constructor
-    }
+    private ArrayList<Stocks> itens;
+    private RecyclerView recyclerView;
+
+    public WalletFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -62,5 +76,37 @@ public class WalletFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_wallet, container, false);
+    }
+
+    private void stocksData(View view) throws JSONException
+    {
+        itens = new ArrayList<Stocks>();
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos", new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                if(response.length() > 0)
+                {
+                    for (int i = 0; i < response.length(); i++)
+                    {
+                        JSONObject jsonData = new JSONObject();
+                        itens.add(new Stocks(jsonData.getString("tipoativo"),
+                                             jsonData.getString("codigoativo"),
+                                             Integer.parseInt(jsonData.getString("quantidade")),
+                                             Double.parseDouble(jsonData.getString("preco")),
+                                             Double.parseDouble(jsonData.getString("outrosCustos")),
+                                             Integer.parseInt(jsonData.getString("usuarioID"))));
+                    }
+
+                    recyclerView = view.findViewById(R.id.stocksRecyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerView.setAdapter(new StocksAdapter(getContext(), itens));
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(getContext(), "Erro", response.getString("message"), "Ok", true);
+            }
+        })));
     }
 }
