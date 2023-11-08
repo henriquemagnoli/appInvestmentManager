@@ -32,14 +32,15 @@ public class VolleyRequests implements IRequest
                     @Override
                     public void onResponse(JSONObject response)
                     {
-                        try
-                        {
-                            callback.onSuccess(response);
-                        }
-                        catch (JSONException e)
-                        {
-                            throw new RuntimeException(e);
-                        }
+                        System.out.println("sucesso -> " + response);
+//                        try
+//                        {
+//                            callback.onSuccess(response);
+//                        }
+//                        catch (JSONException e)
+//                        {
+//                            throw new RuntimeException(e);
+//                        }
                     }
                 },
                 new Response.ErrorListener()
@@ -47,16 +48,17 @@ public class VolleyRequests implements IRequest
                     @Override
                     public void onErrorResponse(VolleyError err)
                     {
-                        try
-                        {
-                            JSONObject response = new JSONObject();
-                            response.put("message", "Internal error.");
-                            callback.onError(response);
-                        }
-                        catch (JSONException ex)
-                        {
-                            throw new RuntimeException(ex);
-                        }
+                        System.out.println(err);
+//                        try
+//                        {
+//                            JSONObject response = new JSONObject();
+//                            response.put("message", "Internal error.");
+//                            callback.onError(response);
+//                        }
+//                        catch (JSONException ex)
+//                        {
+//                            throw new RuntimeException(ex);
+//                        }
                     }
                 })
                 {
