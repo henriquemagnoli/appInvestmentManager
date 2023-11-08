@@ -2,13 +2,29 @@ package com.example.investmentmanager.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.investmentmanager.MainActivity;
 import com.example.investmentmanager.R;
+import com.example.investmentmanager.helpers.Helpers;
+import com.example.investmentmanager.http.VolleyRequests;
+import com.example.investmentmanager.interfaces.IVolleyCallback;
+import com.example.investmentmanager.models.Historic;
+import com.example.investmentmanager.models.HistoricAdapter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,9 +42,10 @@ public class HistoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public HistoryFragment() {
-        // Required empty public constructor
-    }
+    private ArrayList<Historic> itens;
+    private RecyclerView recyclerView;
+
+    public HistoryFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -62,5 +79,50 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_history, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        try {
+            historicData(view);
+        }catch (JSONException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void historicData(View view) throws JSONException
+    {
+        itens = new ArrayList<Historic>();
+
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/historico", new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                if(response.length() > 0)
+                {
+                    for(int i = 0; i < response.length(); i++)
+                    {
+                        JSONObject jsonData = new JSONObject();
+                        itens.add(new Historic(jsonData.getString("tipo").charAt(0),
+                                               jsonData.getString("codigoativo"),
+                                               jsonData.getString("datacompra"),
+                                               jsonData.getString("datavenda"),
+                                               jsonData.getInt("quantidade"),
+                                               jsonData.getDouble("preco"),
+                                               jsonData.getDouble("outroscustos"),
+                                               jsonData.getInt("usarioID")));
+                    }
+
+                    recyclerView = view.findViewById(R.id.historicRecyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerView.setAdapter(new HistoricAdapter(getContext(), itens));
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(getContext(), "Erro", response.getString("message"), "Ok", true);
+            }
+        })));
     }
 }

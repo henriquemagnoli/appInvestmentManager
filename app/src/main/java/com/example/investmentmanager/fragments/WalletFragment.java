@@ -2,6 +2,8 @@ package com.example.investmentmanager.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,6 +80,16 @@ public class WalletFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_wallet, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        try {
+            stocksData(view);
+        }catch (JSONException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
     private void stocksData(View view) throws JSONException
     {
         itens = new ArrayList<Stocks>();
@@ -91,10 +103,10 @@ public class WalletFragment extends Fragment {
                         JSONObject jsonData = new JSONObject();
                         itens.add(new Stocks(jsonData.getString("tipoativo"),
                                              jsonData.getString("codigoativo"),
-                                             Integer.parseInt(jsonData.getString("quantidade")),
-                                             Double.parseDouble(jsonData.getString("preco")),
-                                             Double.parseDouble(jsonData.getString("outrosCustos")),
-                                             Integer.parseInt(jsonData.getString("usuarioID"))));
+                                             jsonData.getInt("quantidade"),
+                                             jsonData.getDouble("preco"),
+                                             jsonData.getDouble("outrosCustos"),
+                                             jsonData.getInt("usuarioID")));
                     }
 
                     recyclerView = view.findViewById(R.id.stocksRecyclerView);

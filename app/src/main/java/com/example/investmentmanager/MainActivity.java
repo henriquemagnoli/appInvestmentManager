@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
-    public static String urlApi = "http://127.0.0.1:8181";
+    public static String urlApi = "http://192.168.3.1:8181";
     public static RequestQueue requestQueue;
 
     @Override

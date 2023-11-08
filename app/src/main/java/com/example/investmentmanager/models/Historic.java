@@ -4,16 +4,18 @@ import java.util.Date;
 
 public class Historic
 {
+    private char type;
     private String stockCode;
-    private Date boughtDate;
-    private Date soldDate;
+    private String boughtDate;
+    private String soldDate;
     private int amount;
     private double price;
     private double otherCosts;
     private int userID;
 
-    public Historic(String stockCode, Date boughtDate, Date soldDate, int amount, double price, double otherCosts, int userID)
+    public Historic(char type, String stockCode, String boughtDate, String soldDate, int amount, double price, double otherCosts, int userID)
     {
+        this.type = type;
         this.stockCode = stockCode;
         this.boughtDate = boughtDate;
         this.soldDate = soldDate;
@@ -23,11 +25,12 @@ public class Historic
         this.userID = userID;
     }
 
+    public void setType(char type) {this.type = type;}
     public void setStockCode(String stockCode){
         this.stockCode = stockCode;
     }
-    public void setBoughtDate(Date boughtDate) { this.boughtDate = boughtDate;}
-    public  void setSoldDate(Date soldDate) {this.soldDate = soldDate;}
+    public void setBoughtDate(String boughtDate) { this.boughtDate = boughtDate;}
+    public  void setSoldDate(String soldDate) {this.soldDate = soldDate;}
     public void setAmount(int amount){
         this.amount = amount;
     }
@@ -41,11 +44,12 @@ public class Historic
         this.userID = userID;
     }
 
+    public char getType() { return this.type;}
     public String getStockCode(){
         return this.stockCode;
     }
-    public Date getBoughtDate() {return  this.boughtDate;}
-    public Date getSoldDate() {return this.soldDate;}
+    public String getBoughtDate() {return  this.boughtDate;}
+    public String getSoldDate() {return this.soldDate;}
     public int getAmount(){
         return this.amount;
     }
