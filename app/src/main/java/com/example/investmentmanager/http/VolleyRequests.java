@@ -23,6 +23,7 @@ public class VolleyRequests implements IRequest
     @Override
     public JsonObjectRequest sendRequestPOST(String path, JSONObject jsonObject, IVolleyCallback callback) throws UnsupportedOperationException {
         final String requestBody = jsonObject.toString();
+
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 MainActivity.urlApi + path,
@@ -33,14 +34,14 @@ public class VolleyRequests implements IRequest
                     public void onResponse(JSONObject response)
                     {
                         System.out.println("sucesso -> " + response);
-//                        try
-//                        {
-//                            callback.onSuccess(response);
-//                        }
-//                        catch (JSONException e)
-//                        {
-//                            throw new RuntimeException(e);
-//                        }
+                        try
+                        {
+                            callback.onSuccess(response);
+                        }
+                        catch (JSONException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
                     }
                 },
                 new Response.ErrorListener()
@@ -48,17 +49,21 @@ public class VolleyRequests implements IRequest
                     @Override
                     public void onErrorResponse(VolleyError err)
                     {
-                        System.out.println(err);
-//                        try
-//                        {
-//                            JSONObject response = new JSONObject();
-//                            response.put("message", "Internal error.");
-//                            callback.onError(response);
-//                        }
-//                        catch (JSONException ex)
-//                        {
-//                            throw new RuntimeException(ex);
-//                        }
+                        try
+                        {
+                            System.out.println(new String(err.networkResponse.data, "UTF-8"));
+                            JSONObject response = new JSONObject();
+                            response.put("message", "Internal error.");
+                            callback.onError(response);
+                        }
+                        catch (JSONException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
+                        catch (UnsupportedEncodingException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 })
                 {

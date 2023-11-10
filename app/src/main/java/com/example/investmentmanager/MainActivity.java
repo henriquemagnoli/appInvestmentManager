@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
-    public static String urlApi = "http://localhost:8181";
+    public static String urlApi = "http://4.228.56.152:3334";
     public static RequestQueue requestQueue;
 
     @Override
@@ -123,13 +123,14 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add((new VolleyRequests()).sendRequestPOST("/login", Helpers.getLoginData(email, password), new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
-//                try {
-//                    if (response.getString("type").equals("Received"))
-//                        screenNavBar(view);
-//                } catch (Exception ex) {
-//                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
-//                }
-                System.out.println(response);
+                try {
+                    if (response.getString("type").equals("Received"))
+                       screenNavBar(view);
+                }
+                catch (Exception ex) {
+                   Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                }
+
             }
             @Override
             public void onError(JSONObject response) throws JSONException {
