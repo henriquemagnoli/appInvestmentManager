@@ -149,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
 
                         screenNavBar(view);
                     }
+                    else
+                    {
+                        Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                    }
                 }
                 catch (Exception ex) {
                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);

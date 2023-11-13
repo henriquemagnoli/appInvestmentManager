@@ -34,10 +34,12 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
 
         Stocks stocks = itens.get(position);
 
+        System.out.println(itens);
+
         holder.stockType.setText(stocks.getStockType());
         holder.stockCode.setText(stocks.getStockCode());
-        holder.totalValue.setText((int) stocks.getPrice());
-        holder.amount.setText(stocks.getAmount());
+        holder.totalValue.setText("Valor total: " + stocks.getPrice());
+        holder.amount.setText("Quantidade: " + stocks.getAmount());
     }
 
     @Override

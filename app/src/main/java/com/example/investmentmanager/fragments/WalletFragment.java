@@ -94,22 +94,29 @@ public class WalletFragment extends Fragment {
     {
         itens = new ArrayList<Stocks>();
         int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
+
+        System.out.println(userID);
         MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + userID, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
                 if(response.length() > 0)
                 {
-                    System.out.println(response);
+                    //Double.parseDouble(jsonData.getString("outrosCustos")),
+
+                    System.out.println(response.length());
 
                     for (int i = 0; i < response.length(); i++)
                     {
-                        JSONObject jsonData = new JSONObject();
+                        JSONObject jsonData = response.getJSONObject("codigoativo" + i);
+
+                        System.out.println(jsonData);
+
                         itens.add(new Stocks(jsonData.getString("tipoativo"),
                                              jsonData.getString("codigoativo"),
-                                             jsonData.getInt("quantidade"),
-                                             jsonData.getDouble("preco"),
-                                             jsonData.getDouble("outrosCustos"),
-                                             jsonData.getInt("usuarioID")));
+                                             jsonData.getString("quantidade"),
+                                             jsonData.getString("preco"),
+                                             "0",
+                                             jsonData.getString("usuarioID")));
                     }
 
                     recyclerView = view.findViewById(R.id.stocksRecyclerView);

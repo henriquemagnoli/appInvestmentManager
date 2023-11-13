@@ -2,18 +2,16 @@ package com.example.investmentmanager.models;
 
 import java.util.Date;
 
-public class Stocks
-{
+public class Stocks {
     private String stockType;
     private String stockCode;
-    private int amount;
-    private double price;
-    private double otherCosts;
-    private int userID;
+    private String amount;
+    private String price;
+    private String otherCosts;
+    private String userID;
 
     // Constructor
-    public Stocks(String stockType, String stockCode, int amount, double price, double otherCosts, int userID)
-    {
+    public Stocks(String stockType, String stockCode, String amount, String price, String otherCosts, String userID) {
         this.stockType = stockType;
         this.stockCode = stockCode;
         this.amount = amount;
@@ -22,53 +20,51 @@ public class Stocks
         this.userID = userID;
     }
 
-    // SETS
-    public void setStockType(String stockType){
+    public String getStockType() {
+        return stockType;
+    }
+
+    public void setStockType(String stockType) {
         this.stockType = stockType;
     }
 
-    public void setStockCode(String stockCode){
+    public String getStockCode() {
+        return stockCode;
+    }
+
+    public void setStockCode(String stockCode) {
         this.stockCode = stockCode;
     }
 
-    public void setAmount(int amount){
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
-    public void setPrice(double price){
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public void setOtherCosts(double otherCosts){
+    public String getOtherCosts() {
+        return otherCosts;
+    }
+
+    public void setOtherCosts(String otherCosts) {
         this.otherCosts = otherCosts;
     }
 
-    public  void setUserID (int userID){
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
         this.userID = userID;
-    }
-
-    // GETS
-    public String getStockType(){
-        return this.stockType;
-    }
-
-    public String getStockCode(){
-        return this.stockCode;
-    }
-
-    public int getAmount(){
-        return this.amount;
-    }
-
-    public double getPrice(){
-        return this.price;
-    }
-
-    public double getOtherCosts(){
-        return this.otherCosts;
-    }
-
-    public int getUserID(){
-        return this.userID;
     }
 }
