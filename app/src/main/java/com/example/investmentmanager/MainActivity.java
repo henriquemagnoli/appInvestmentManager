@@ -5,11 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -30,16 +36,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
-    public static String urlApi = "http://4.228.56.152:3334";
+    public static String urlApi = "http://20.206.160.91:3334";
     public static RequestQueue requestQueue;
 
+    // Variavel para armazenar o id do usuario
+    public static SharedPreferences userIdCache;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         requestQueue = com.android.volley.toolbox.Volley.newRequestQueue(getApplicationContext());
+
+        userIdCache = getSharedPreferences(getString(R.string.user_id_cache), Context.MODE_PRIVATE);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -125,7 +141,14 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(JSONObject response) throws JSONException {
                 try {
                     if (response.getString("type").equals("Received"))
-                       screenNavBar(view);
+                    {
+                        SharedPreferences.Editor editor = MainActivity.userIdCache.edit();
+
+                        editor.putString("usuarioID", response.getString("idUsuario"));
+                        editor.apply();
+
+                        screenNavBar(view);
+                    }
                 }
                 catch (Exception ex) {
                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
@@ -134,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onError(JSONObject response) throws JSONException {
-                //Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
                 System.out.println(response);
             }
         }));

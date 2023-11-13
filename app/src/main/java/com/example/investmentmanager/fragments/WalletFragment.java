@@ -93,11 +93,14 @@ public class WalletFragment extends Fragment {
     private void stocksData(View view) throws JSONException
     {
         itens = new ArrayList<Stocks>();
-        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos", new IVolleyCallback() {
+        int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + userID, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
                 if(response.length() > 0)
                 {
+                    System.out.println(response);
+
                     for (int i = 0; i < response.length(); i++)
                     {
                         JSONObject jsonData = new JSONObject();
