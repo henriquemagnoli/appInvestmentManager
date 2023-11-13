@@ -16,7 +16,8 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Criar Conta"
             app:titleTextColor="#0F4163"
-            app:navigationIcon="@drawable/arrow_back_24px" />
+            app:navigationIcon="@drawable/arrow_back_24px"
+            android:onClick="screenLogin"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -95,7 +96,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:maxLines="1"
+            android:inputType="textPassword"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
