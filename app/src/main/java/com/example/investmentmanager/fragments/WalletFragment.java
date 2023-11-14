@@ -19,6 +19,7 @@ import com.example.investmentmanager.http.VolleyRequests;
 import com.example.investmentmanager.interfaces.IVolleyCallback;
 import com.example.investmentmanager.models.Stocks;
 import com.example.investmentmanager.models.StocksAdapter;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,22 +96,24 @@ public class WalletFragment extends Fragment {
         itens = new ArrayList<Stocks>();
         int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
 
-        System.out.println(userID);
-        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + userID, new IVolleyCallback() {
+        String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtProcurarAtivo)).getEditText().getText());
+        String path;
+
+        if(!stockCode.equals(""))
+            path = "/ativos/" + userID + "/" + stockCode;
+        else
+            path = "/ativos/" + userID;
+
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET(path, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
                 if(response.length() > 0)
                 {
                     //Double.parseDouble(jsonData.getString("outrosCustos")),
 
-                    System.out.println(response.length());
-
                     for (int i = 0; i < response.length(); i++)
                     {
-                        JSONObject jsonData = response.getJSONObject("codigoativo" + i);
-
-                        System.out.println(jsonData);
-
+                        JSONObject jsonData = response.getJSONObject("ativos" + i);
                         itens.add(new Stocks(jsonData.getString("tipoativo"),
                                              jsonData.getString("codigoativo"),
                                              jsonData.getString("quantidade"),
@@ -129,6 +132,6 @@ public class WalletFragment extends Fragment {
             public void onError(JSONObject response) throws JSONException {
                 Helpers.alert(getContext(), "Erro", response.getString("message"), "Ok", true);
             }
-        })));
+        }, "ativos")));
     }
 }

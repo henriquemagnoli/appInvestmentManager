@@ -94,23 +94,24 @@ public class HistoryFragment extends Fragment {
     private void historicData(View view) throws JSONException
     {
         itens = new ArrayList<Historic>();
+        int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
 
-        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/historico", new IVolleyCallback() {
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/historico/" + userID, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
                 if(response.length() > 0)
                 {
-                    for(int i = 0; i < response.length(); i++)
+                    for(int i = 0; i <= response.length(); i++)
                     {
-                        JSONObject jsonData = new JSONObject();
-                        itens.add(new Historic(jsonData.getString("tipo").charAt(0),
+                        JSONObject jsonData = response.getJSONObject("historico" + i);
+                        itens.add(new Historic(jsonData.getString("tipo"),
                                                jsonData.getString("codigoativo"),
                                                jsonData.getString("datacompra"),
                                                jsonData.getString("datavenda"),
-                                               jsonData.getInt("quantidade"),
-                                               jsonData.getDouble("preco"),
-                                               jsonData.getDouble("outroscustos"),
-                                               jsonData.getInt("usarioID")));
+                                               jsonData.getString("quantidade"),
+                                               jsonData.getString("preco"),
+                                               jsonData.getString("outroscustos"),
+                                               jsonData.getString("usarioID")));
                     }
 
                     recyclerView = view.findViewById(R.id.historicRecyclerView);
@@ -123,6 +124,6 @@ public class HistoryFragment extends Fragment {
             public void onError(JSONObject response) throws JSONException {
                 Helpers.alert(getContext(), "Erro", response.getString("message"), "Ok", true);
             }
-        })));
+        }, "historico")));
     }
 }

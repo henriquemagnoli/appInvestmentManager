@@ -41,14 +41,14 @@ public class HistoricAdapter extends RecyclerView.Adapter<HistoricViewHolder>
         String tipoMovimentacao = "";
         String dataMovimentacao = null;
 
-        if(historic.getType() == 'C')
+        if(historic.getType() == "C")
         {
             holder.type.setTextColor(Color.parseColor("#1C9838"));
             holder.stockCode.setTextColor(Color.parseColor("#1C9838"));
             dataMovimentacao = new SimpleDateFormat("dd/MM/yyyy").format(historic.getBoughtDate());
             tipoMovimentacao = "Compra";
         }
-        else if(historic.getType() == 'V')
+        else if(historic.getType() == "V")
         {
             holder.type.setTextColor(Color.parseColor("#B52424"));
             holder.stockCode.setTextColor(Color.parseColor("#B52424"));
@@ -60,7 +60,7 @@ public class HistoricAdapter extends RecyclerView.Adapter<HistoricViewHolder>
         holder.type.setText(tipoMovimentacao);
         holder.stockMovimentationDate.setText(dataMovimentacao);
         holder.amount.setText("Quantidade: " + historic.getAmount());
-        holder.price.setText("Valor total: " + (int) historic.getPrice());
+        holder.price.setText("Valor total: " + historic.getPrice());
     }
 
     @Override

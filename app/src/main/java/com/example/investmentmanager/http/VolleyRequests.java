@@ -93,7 +93,7 @@ public class VolleyRequests implements IRequest
     }
 
     @Override
-    public JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback) throws UnsupportedOperationException {
+    public JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback, String objectName) throws UnsupportedOperationException {
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
                 MainActivity.urlApi + path,
@@ -104,7 +104,7 @@ public class VolleyRequests implements IRequest
                         JSONObject jsonObject = new JSONObject();
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                jsonObject.put("codigoativo" + i, response.getJSONObject(i));
+                                jsonObject.put(objectName + i, response.getJSONObject(i));
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
@@ -123,7 +123,7 @@ public class VolleyRequests implements IRequest
                         try
                         {
                             JSONObject response = new JSONObject();
-                            response.put("message", "Internal error.");
+                            response.put("message", "Internal error." + error.getMessage());
                             callback.onError(response);
                         }
                         catch (JSONException ex)

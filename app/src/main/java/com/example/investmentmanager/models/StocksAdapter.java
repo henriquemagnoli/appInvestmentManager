@@ -12,6 +12,7 @@ import com.example.investmentmanager.R;
 
 import java.util.ArrayList;
 
+
 public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
 {
     private Context context;
@@ -33,8 +34,6 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
     public void onBindViewHolder(@NonNull StocksViewHolder holder, int position) {
 
         Stocks stocks = itens.get(position);
-
-        System.out.println(itens);
 
         holder.stockType.setText(stocks.getStockType());
         holder.stockCode.setText(stocks.getStockCode());

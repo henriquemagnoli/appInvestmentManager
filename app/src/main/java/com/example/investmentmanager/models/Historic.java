@@ -4,16 +4,16 @@ import java.util.Date;
 
 public class Historic
 {
-    private char type;
+    private String type;
     private String stockCode;
     private String boughtDate;
     private String soldDate;
-    private int amount;
-    private double price;
-    private double otherCosts;
-    private int userID;
+    private String amount;
+    private String price;
+    private String otherCosts;
+    private String userID;
 
-    public Historic(char type, String stockCode, String boughtDate, String soldDate, int amount, double price, double otherCosts, int userID)
+    public Historic(String type, String stockCode, String boughtDate, String soldDate, String amount, String price, String otherCosts, String userID)
     {
         this.type = type;
         this.stockCode = stockCode;
@@ -25,42 +25,67 @@ public class Historic
         this.userID = userID;
     }
 
-    public void setType(char type) {this.type = type;}
-    public void setStockCode(String stockCode){
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStockCode() {
+        return stockCode;
+    }
+
+    public void setStockCode(String stockCode) {
         this.stockCode = stockCode;
     }
-    public void setBoughtDate(String boughtDate) { this.boughtDate = boughtDate;}
-    public  void setSoldDate(String soldDate) {this.soldDate = soldDate;}
-    public void setAmount(int amount){
+
+    public String getBoughtDate() {
+        return boughtDate;
+    }
+
+    public void setBoughtDate(String boughtDate) {
+        this.boughtDate = boughtDate;
+    }
+
+    public String getSoldDate() {
+        return soldDate;
+    }
+
+    public void setSoldDate(String soldDate) {
+        this.soldDate = soldDate;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
         this.amount = amount;
     }
-    public void setPrice(double price){
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
         this.price = price;
     }
-    public void setOtherCosts(double otherCosts){
+
+    public String getOtherCosts() {
+        return otherCosts;
+    }
+
+    public void setOtherCosts(String otherCosts) {
         this.otherCosts = otherCosts;
     }
-    public  void setUserID (int userID){
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
         this.userID = userID;
     }
-
-    public char getType() { return this.type;}
-    public String getStockCode(){
-        return this.stockCode;
-    }
-    public String getBoughtDate() {return  this.boughtDate;}
-    public String getSoldDate() {return this.soldDate;}
-    public int getAmount(){
-        return this.amount;
-    }
-    public double getPrice(){
-        return this.price;
-    }
-    public double getOtherCosts(){
-        return this.otherCosts;
-    }
-    public int getUserID(){
-        return this.userID;
-    }
-
 }
