@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void screenSignUp(View view) {setContentView(R.layout.signup_screen);}
 
-    public void screenAddStock(View view) {setContentView(R.layout.addstock_screen);}
+    public void screenAddStock(View view){setContentView(R.layout.addstock_screen);}
 
     public void screenNavBar(View view) {
         setContentView(R.layout.main);
@@ -235,5 +235,10 @@ public class MainActivity extends AppCompatActivity {
                 Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
             }
         })));
+    }
+
+    public void salvarTransacao(View view)
+    {
+        System.out.println("teste");
     }
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.investmentmanager.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 
@@ -35,9 +36,12 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
 
         Stocks stocks = itens.get(position);
 
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        String valorFormatado = nf.format(Double.parseDouble(stocks.getPrice()));
+
         holder.stockType.setText(stocks.getStockType());
         holder.stockCode.setText(stocks.getStockCode());
-        holder.totalValue.setText("Valor total: " + stocks.getPrice());
+        holder.totalValue.setText("Valor total: " + valorFormatado);
         holder.amount.setText("Quantidade: " + stocks.getAmount());
     }
 

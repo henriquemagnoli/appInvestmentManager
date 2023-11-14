@@ -41,7 +41,6 @@
             android:id="@+id/btnPesquisarAtivo"
             android:layout_width="190dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
             android:text="Pesquisar"
             android:backgroundTint="#0F4163"
             android:textColor="@color/white"
