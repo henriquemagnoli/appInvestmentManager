@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -14,9 +15,6 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +25,8 @@ import com.example.investmentmanager.fragments.WalletFragment;
 import com.example.investmentmanager.helpers.Helpers;
 import com.example.investmentmanager.http.VolleyRequests;
 import com.example.investmentmanager.interfaces.IVolleyCallback;
+import com.example.investmentmanager.models.Stocks;
+import com.example.investmentmanager.models.StocksAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -35,11 +35,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     public static String urlApi = "http://20.206.160.91:3334";
@@ -273,8 +268,25 @@ public class MainActivity extends AppCompatActivity {
         })));
     }
 
-    public void updateStock(View view, int idStock)
+    public void getStockDataByID(View view, int idStock)
     {
+        int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
 
+        MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + idStock + "/" + userID, new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                if(response.length() > 0)
+                {
+                    JSONObject jsonData = response.getJSONObject("ativosID0");
+                        System.out.println(jsonData);
+
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+        }, "ativosID")));
     }
 }

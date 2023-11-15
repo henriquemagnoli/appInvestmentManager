@@ -56,7 +56,7 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
 
             @Override
             public void onClick(View view) {
-                main.updateStock(view, stocks.getId());
+                main.getStockDataByID(view, stocks.getId());
             }
         });
     }
