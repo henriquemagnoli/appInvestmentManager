@@ -239,6 +239,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void salvarTransacao(View view)
     {
-        System.out.println("teste");
+        String stockType = String.valueOf(((TextInputLayout) findViewById(R.id.txtTipoAtivo)).getEditText().getText());;
+        String stockCode = String.valueOf(((TextInputLayout) findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
+        String boughtDate = String.valueOf(((TextInputLayout) findViewById(R.id.txtDataCompra)).getEditText().getText());
+        String amount = String.valueOf(((TextInputLayout) findViewById(R.id.txtQuantidade)).getEditText().getText()) ;
+        String price = String.valueOf(((TextInputLayout) findViewById(R.id.txtPreco)).getEditText().getText());
+        String otherCosts = String.valueOf(((TextInputLayout) findViewById(R.id.txtOutrosCustos)).getEditText().getText());
     }
 }

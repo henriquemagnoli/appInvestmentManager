@@ -42,6 +42,7 @@
         android:paddingHorizontal="15dp">
 
         <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/typeStock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
