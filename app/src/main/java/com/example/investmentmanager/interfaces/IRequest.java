@@ -14,4 +14,5 @@ public interface IRequest
     JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback, String objectName) throws UnsupportedOperationException;
 
     StringRequest sendRequestPUT(String path, Map params) throws UnsupportedOperationException;
+    JsonArrayRequest sendRequestDelete(String path, IVolleyCallback callback) throws  UnsupportedOperationException;
 }

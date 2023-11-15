@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.ContextThemeWrapper;
 
+import com.example.investmentmanager.MainActivity;
 import com.example.investmentmanager.R;
 
 import org.json.JSONException;
@@ -32,6 +33,22 @@ public class Helpers
         data.put("cpf", cpf);
         data.put("senha", password);
         data.put("datanascimento", date);
+        return data;
+    }
+
+    public static JSONObject getAddTransaction(String stockTransactionType, String stockType, String stockCode, String boughtDate, int amount, double price, double otherCosts, int usuarioID) throws JSONException
+    {
+        JSONObject data = new JSONObject();
+        data.put("tipoativo", stockType);
+        data.put("codigoativo", stockCode);
+        data.put("datacompra", boughtDate);
+        data.put("datavenda", "");
+        data.put("quantidade", amount);
+        data.put("preco", price);
+        data.put("outroscustos", otherCosts);
+        data.put("tipo",stockTransactionType);
+        data.put("usuarioID", usuarioID);
+
         return data;
     }
 
@@ -114,5 +131,100 @@ public class Helpers
         }
     }
 
+    public static boolean validateLogin(Context context, String email, String password)
+    {
+        if (!email.equals("")) {
+            if (!Helpers.validateRegexEmail(email)) {
+                Helpers.alert(context, "Atenção", "Formato do e-mail inválido.", "Ok", true);
+                return false;
+            }
+        } else {
+            Helpers.alert(context, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
+            return false;
+        }
 
+        if (password.equals("")) {
+            Helpers.alert(context, "Atenção", "O campo da senha deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateSignUp(Context context, String fullName, String cellPhone, String email, String cpf, String password, String date)
+    {
+        if(fullName.equals("")){
+            Helpers.alert(context, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(cellPhone.equals("")){
+            Helpers.alert(context, "Atenção", "Campo do telefone deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if (!email.equals("")) {
+            if (!Helpers.validateRegexEmail(email)) {
+                Helpers.alert(context, "Atenção", "Formato do e-mail inválido.", "Ok", true);
+                return false;
+            }
+        }
+        else {
+            Helpers.alert(context, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(!cpf.equals("")){
+            if(!Helpers.validateCpf(cpf)){
+                Helpers.alert(context, "Atenção", "Formato do cpf inválido.", "Ok", true);
+                return false;
+            }
+        }
+        else{
+            Helpers.alert(context, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(password.equals("")){
+            Helpers.alert(context, "Atenção", "Campo da senha deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(date.equals("")){
+            Helpers.alert(context, "Atenção", "Campo da data de nascimento deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateAddTransaction(Context context, String stockType, String stockCode, String boughtDate, String amount, String price)
+    {
+        if(stockType.equals("")){
+            Helpers.alert(context, "Atenção", "Campo do tipo do ativo deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(stockCode.equals("")){
+            Helpers.alert(context, "Atenção", "Campo do código do ativo deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(boughtDate.equals("")){
+            Helpers.alert(context, "Atenção", "Campo da data da transação deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(amount.equals("")){
+            Helpers.alert(context, "Atenção", "Campo da quantidade de ativos deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        if(price.equals("")){
+            Helpers.alert(context, "Atenção", "Campo do preço do ativo deve ser preenchido.", "Ok", true);
+            return false;
+        }
+
+        return true;
+    }
 }

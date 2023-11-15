@@ -176,4 +176,53 @@ public class VolleyRequests implements IRequest
         return request;
     }
 
+    @Override
+    public JsonArrayRequest sendRequestDelete(String path, IVolleyCallback callback) throws UnsupportedOperationException
+    {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.DELETE,
+                MainActivity.urlApi + path,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("returnData", response.getJSONObject(0));
+                            callback.onSuccess(jsonObject);
+                        } catch (JSONException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try
+                        {
+                            JSONObject response = new JSONObject();
+                            response.put("message", "Internal error." + error.getMessage());
+                            callback.onError(response);
+                        }
+                        catch (JSONException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders()
+            {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-type","application/application/json; charset=utf-8");
+                headers.put("Accept", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        request.setTag("deleteRequest");
+        return request;
+    }
 }

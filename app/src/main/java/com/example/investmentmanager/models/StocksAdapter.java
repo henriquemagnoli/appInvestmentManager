@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.investmentmanager.MainActivity;
 import com.example.investmentmanager.R;
 
 import java.text.NumberFormat;
@@ -38,11 +39,26 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder>
 
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         String valorFormatado = nf.format(Double.parseDouble(stocks.getPrice()));
+        MainActivity main = new MainActivity();
 
         holder.stockType.setText(stocks.getStockType());
         holder.stockCode.setText(stocks.getStockCode());
         holder.totalValue.setText("Valor total: " + valorFormatado);
         holder.amount.setText("Quantidade: " + stocks.getAmount());
+        holder.btnExcluir.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+               main.deleteStock(view, stocks.getId());
+            }
+        });
+
+        holder.btnEditar.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                main.updateStock(view, stocks.getId());
+            }
+        });
     }
 
     @Override

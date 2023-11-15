@@ -29,6 +29,7 @@ import com.example.investmentmanager.http.VolleyRequests;
 import com.example.investmentmanager.interfaces.IVolleyCallback;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -70,7 +71,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void screenSignUp(View view) {setContentView(R.layout.signup_screen);}
 
-    public void screenAddStock(View view){setContentView(R.layout.addstock_screen);}
+    public void screenAddStock(View view)
+    {
+        setContentView(R.layout.addstock_screen);
+    }
 
     public void screenNavBar(View view) {
         setContentView(R.layout.main);
@@ -121,20 +125,8 @@ public class MainActivity extends AppCompatActivity {
         String email = String.valueOf(((TextInputLayout) findViewById(R.id.txtEmail)).getEditText().getText());
         String password = String.valueOf(((TextInputLayout) findViewById(R.id.txtSenha)).getEditText().getText());
 
-        if (!email.equals("")) {
-            if (!Helpers.validateRegexEmail(email)) {
-                Helpers.alert(MainActivity.this, "Atenção", "Formato do e-mail inválido.", "Ok", true);
-                return;
-            }
-        } else {
-            Helpers.alert(MainActivity.this, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
+        if(!Helpers.validateLogin(MainActivity.this, email, password))
             return;
-        }
-
-        if (password.equals("")) {
-            Helpers.alert(MainActivity.this, "Atenção", "O campo da senha deve ser preenchido.", "Ok", true);
-            return;
-        }
 
         requestQueue.add((new VolleyRequests()).sendRequestPOST("/login", Helpers.getLoginData(email, password), new IVolleyCallback() {
             @Override
@@ -176,47 +168,8 @@ public class MainActivity extends AppCompatActivity {
         String password = String.valueOf(((TextInputLayout) findViewById(R.id.txtSenha)).getEditText().getText());
         String date = String.valueOf(((TextInputLayout) findViewById(R.id.txtData)).getEditText().getText());
 
-        if(fullName.equals("")){
-            Helpers.alert(MainActivity.this, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
+        if(!Helpers.validateSignUp(MainActivity.this, fullName, cellPhone, email, cpf, password, date))
             return;
-        }
-
-        if(cellPhone.equals("")){
-            Helpers.alert(MainActivity.this, "Atenção", "Campo do telefone deve ser preenchido.", "Ok", true);
-            return;
-        }
-
-        if (!email.equals("")) {
-            if (!Helpers.validateRegexEmail(email)) {
-                Helpers.alert(MainActivity.this, "Atenção", "Formato do e-mail inválido.", "Ok", true);
-                return;
-            }
-        }
-        else {
-            Helpers.alert(MainActivity.this, "Atenção", "O campo do e-mail deve ser preenchido.", "Ok", true);
-            return;
-        }
-
-        if(!cpf.equals("")){
-           if(!Helpers.validateCpf(cpf)){
-               Helpers.alert(MainActivity.this, "Atenção", "Formato do cpf inválido.", "Ok", true);
-               return;
-           }
-        }
-        else{
-            Helpers.alert(MainActivity.this, "Atenção", "Campo de nome completo deve ser preenchido.", "Ok", true);
-            return;
-        }
-
-        if(password.equals("")){
-            Helpers.alert(MainActivity.this, "Atenção", "Campo da senha deve ser preenchido.", "Ok", true);
-            return;
-        }
-
-        if(date.equals("")){
-            Helpers.alert(MainActivity.this, "Atenção", "Campo da data de nascimento deve ser preenchido.", "Ok", true);
-            return;
-        }
 
         requestQueue.add((new VolleyRequests().sendRequestPOST("/usuarios", Helpers.getCreateAccountData(fullName, cellPhone, email, cpf, password, date), new IVolleyCallback() {
             @Override
@@ -237,13 +190,91 @@ public class MainActivity extends AppCompatActivity {
         })));
     }
 
-    public void salvarTransacao(View view)
+    public void salvarTransacao(View view) throws Exception
     {
+        String stockTransactionType;
+
+        Boolean verifyCheckedTransaction = ((MaterialSwitch) findViewById(R.id.swtTipoTransacao)).isChecked();
         String stockType = String.valueOf(((TextInputLayout) findViewById(R.id.txtTipoAtivo)).getEditText().getText());;
         String stockCode = String.valueOf(((TextInputLayout) findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
         String boughtDate = String.valueOf(((TextInputLayout) findViewById(R.id.txtDataCompra)).getEditText().getText());
-        String amount = String.valueOf(((TextInputLayout) findViewById(R.id.txtQuantidade)).getEditText().getText()) ;
+        String amount = String.valueOf(((TextInputLayout) findViewById(R.id.txtQuantidade)).getEditText().getText());
         String price = String.valueOf(((TextInputLayout) findViewById(R.id.txtPreco)).getEditText().getText());
         String otherCosts = String.valueOf(((TextInputLayout) findViewById(R.id.txtOutrosCustos)).getEditText().getText());
+        int usuarioID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
+
+        if(verifyCheckedTransaction)
+            stockTransactionType = "C";
+        else
+            stockTransactionType = "V";
+
+        if(!Helpers.validateAddTransaction(MainActivity.this, stockType, stockCode, boughtDate, amount, price))
+            return;
+
+        requestQueue.add((new VolleyRequests().sendRequestPOST("/ativos/" + usuarioID, Helpers.getAddTransaction(stockTransactionType,
+                                                                                                                      stockType,
+                                                                                                                      stockCode,
+                                                                                                                      boughtDate,
+                                                                                                                      Integer.parseInt(amount),
+                                                                                                                      Double.valueOf(price),
+                                                                                                                      0,
+                                                                                                                      //Double.valueOf(otherCosts),
+                                                                                                                      usuarioID),
+                                                                                                                      new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                try {
+                    if(response.getString("type").equals("Received"))
+                    {
+                        setContentView(R.layout.main);
+                        ((BottomNavigationView) findViewById(R.id.navBar)).setSelectedItemId(R.id.btnWallet);
+                        setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
+                    }
+
+                }
+                catch (Exception ex){
+                    Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+        })));
+    }
+
+    public void returnWalletScreen(View view)
+    {
+        setContentView(R.layout.main);
+        ((BottomNavigationView) findViewById(R.id.navBar)).setSelectedItemId(R.id.btnWallet);
+        setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
+    }
+
+    public void deleteStock(View view, int idStock)
+    {
+        requestQueue.add((new VolleyRequests().sendRequestDelete("/ativos/" + idStock, new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                try
+                {
+                    if(response.getString("type").equals("Received"))
+                        Helpers.alert(MainActivity.this, "Sucesso", response.getString("message"), "Ok", true);
+                }
+                catch (Exception ex) {
+                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+        })));
+    }
+
+    public void updateStock(View view, int idStock)
+    {
+
     }
 }

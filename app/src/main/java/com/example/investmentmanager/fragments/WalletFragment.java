@@ -114,7 +114,8 @@ public class WalletFragment extends Fragment {
                     for (int i = 0; i < response.length(); i++)
                     {
                         JSONObject jsonData = response.getJSONObject("ativos" + i);
-                        itens.add(new Stocks(jsonData.getString("tipoativo"),
+                        itens.add(new Stocks(Integer.parseInt(jsonData.getString("id")),
+                                             jsonData.getString("tipoativo"),
                                              jsonData.getString("codigoativo"),
                                              jsonData.getString("quantidade"),
                                              jsonData.getString("preco"),

@@ -47,7 +47,7 @@
             app:cornerRadius="10dp"
             app:icon="@drawable/lupa"
             app:iconTint="#000000"
-            android:onClick="stocksData"/>
+            android:onClick="teste"/>
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"

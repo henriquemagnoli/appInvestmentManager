@@ -72,6 +72,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAlterarAtivo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -80,9 +81,10 @@
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                     app:icon="@drawable/plus"
                     app:iconTint="#0F4163"
-                    android:onClick="screenAddStock"/>
+                    android:onClick="updateStock"/>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExcluirAtivo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Excluir"
@@ -90,7 +92,8 @@
                     android:backgroundTint="#B52424"
                     style="@style/Widget.Material3.Button.ElevatedButton.Icon"
                     app:icon="@drawable/lixo"
-                    app:iconTint="#FFFFFF"/>
+                    app:iconTint="#FFFFFF"
+                    />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

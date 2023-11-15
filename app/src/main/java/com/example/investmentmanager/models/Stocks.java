@@ -3,6 +3,8 @@ package com.example.investmentmanager.models;
 import java.util.Date;
 
 public class Stocks {
+
+    private int id;
     private String stockType;
     private String stockCode;
     private String amount;
@@ -11,7 +13,8 @@ public class Stocks {
     private String userID;
 
     // Constructor
-    public Stocks(String stockType, String stockCode, String amount, String price, String otherCosts, String userID) {
+    public Stocks(int id, String stockType, String stockCode, String amount, String price, String otherCosts, String userID) {
+        this.id = id;
         this.stockType = stockType;
         this.stockCode = stockCode;
         this.amount = amount;
@@ -20,9 +23,15 @@ public class Stocks {
         this.userID = userID;
     }
 
-    public String getStockType() {
-        return stockType;
+    public int getId() {
+        return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStockType() {return stockType;}
 
     public void setStockType(String stockType) {
         this.stockType = stockType;

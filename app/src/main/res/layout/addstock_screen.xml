@@ -22,14 +22,14 @@
                 android:background="#0F4163">
 
                 <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/topBarTransicao"
+                    android:id="@+id/topBarTransacao"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:title="Adicionar Transação"
                     app:titleTextColor="#FFFFFF"
                     app:navigationIcon="@drawable/arrow_back_24px"
                     app:navigationIconTint="#FFFFFF"
-                    />
+                    android:onClick="returnWalletScreen"/>
 
             </com.google.android.material.appbar.AppBarLayout>
         </LinearLayout>
@@ -42,7 +42,7 @@
         android:paddingHorizontal="15dp">
 
         <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/typeStock"
+            android:id="@+id/swtTipoTransacao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
