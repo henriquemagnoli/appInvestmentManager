@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar btnFecharToolBar = (MaterialToolbar) screen.findViewById(R.id.topBarTransacao);
         Button btnSalvar = (Button) screen.findViewById(R.id.btnSalvar);
         Button btnFechar = (Button) screen.findViewById(R.id.btnCancelar);
+        Button btnProcurar = (Button) screen.findViewById(R.id.btnProcurar);
 
         // Cria o AlertDialog com o layout personalizado
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.myFullscreenAlertDialogStyle);
@@ -93,12 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         final AlertDialog modalAddStock = builder.create();
 
-        txtCodigoAtivo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        btnProcurar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-
-                if(!b)
-                    System.out.println("sai");
+            public void onClick(View view) {
+                getStocksValueApi(screen, String.valueOf(txtCodigoAtivo.getEditText().getText()));
             }
         });
 
@@ -465,9 +464,9 @@ public class MainActivity extends AppCompatActivity {
         })));
     }
 
-    public void getStocksValueApi(View view)
+    public void getStocksValueApi(View view, String stockCode)
     {
-        String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
+        TextInputLayout txtStockCode = ((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo));
 
         requestQueue.add((new VolleyRequests().sendRequestGET("/bolsavalores/" + stockCode, new IVolleyCallback() {
             @Override
@@ -477,7 +476,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(JSONObject response) throws JSONException {
-                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+                //Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+                System.out.println(response);
             }
 
         }, "bolsavalores")));

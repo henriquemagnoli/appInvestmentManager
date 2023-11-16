@@ -60,18 +60,37 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtCodigoAtivo"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Código do Ativo">
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txtCodigoAtivo"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Código do Ativo">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnProcurar"
+                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="50dp"
+                android:layout_height="65dp"
+                android:backgroundTint="#0F4163"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/lupa"
+                app:iconTint="#FFFFFF" />
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/txtDataCompra"
