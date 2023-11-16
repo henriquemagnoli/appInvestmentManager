@@ -158,7 +158,14 @@ public class VolleyRequests implements IRequest
                     @Override
                     public void onResponse(String response) {
 
-                        System.out.println(response);
+                        try {
+                            JSONObject jsonData = new JSONObject(response);
+                            callback.onSuccess(jsonData);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+
                     }
                 },
                 new Response.ErrorListener() {

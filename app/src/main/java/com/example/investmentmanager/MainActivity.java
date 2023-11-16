@@ -13,10 +13,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -34,6 +37,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
@@ -83,16 +87,48 @@ public class MainActivity extends AppCompatActivity {
         View screen = LayoutInflater.from(view.getContext()).inflate(R.layout.addstock_screen, null);
 
         TextInputLayout txtCodigoAtivo = (TextInputLayout) screen.findViewById(R.id.txtCodigoAtivo);
+        TextInputLayout txtQuantidadeId = (TextInputLayout) screen.findViewById(R.id.txtQuantidade);
+        TextInputEditText txtQuantidadeET = (TextInputEditText) screen.findViewById(R.id.txtQuantidadeET);
+        TextInputLayout txtPrecoId = (TextInputLayout) screen.findViewById(R.id.txtPreco);
+        TextView txvValorTotal = (TextView) screen.findViewById(R.id.txvValorTotal);
+
         MaterialToolbar btnFecharToolBar = (MaterialToolbar) screen.findViewById(R.id.topBarTransacao);
         Button btnSalvar = (Button) screen.findViewById(R.id.btnSalvar);
         Button btnFechar = (Button) screen.findViewById(R.id.btnCancelar);
         Button btnProcurar = (Button) screen.findViewById(R.id.btnProcurar);
+
 
         // Cria o AlertDialog com o layout personalizado
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.myFullscreenAlertDialogStyle);
         builder.setView(screen);
 
         final AlertDialog modalAddStock = builder.create();
+
+        txtQuantidadeET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                String valor;
+                Double resultado;
+                Double quantidade = Double.valueOf(String.valueOf(txtQuantidadeId.getEditText().getText()));
+                Double preco = Double.valueOf(String.valueOf(txtPrecoId.getEditText().getText()));
+
+                resultado = quantidade * preco;
+                valor = String.valueOf(resultado);
+
+                txvValorTotal.setText(valor);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         btnProcurar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    salvarTransacao(screen);
+                    salvarTransacao(screen, modalAddStock);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -134,8 +170,10 @@ public class MainActivity extends AppCompatActivity {
     public void screenNavBar(View view) {
         setContentView(R.layout.main);
 
+
+
         BottomNavigationView bottomNav = findViewById(R.id.navBar);
-        setFragment(new HomeFragment(), "Home", "Valor Aplicado", "R$ 1.000,00");
+        setFragment(new HomeFragment(), "Home", "Valor Aplicado", view);
 
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -144,13 +182,13 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.btnHome) {
-                    setFragment(new HomeFragment(), "Home", "Valor Aplicado", "R$ 1.000,00");
+                    setFragment(new HomeFragment(), "Home", "Valor Aplicado", view);
                     return true;
                 } else if (id == R.id.btnWallet) {
-                    setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
+                    setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", view);
                     return true;
                 } else if (id == R.id.btnHistorico) {
-                    setFragment(new HistoryFragment(), "Histórico", "Exibe o histórico de lançamentos de compras de ativos.", "");
+                    setFragment(new HistoryFragment(), "Histórico", "Exibe o histórico de lançamentos de compras de ativos.", view);
                     return true;
                 }
                 return false;
@@ -158,10 +196,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void setFragment(Fragment fragment, String title, String subTitle, String apliedValue) {
+    void setFragment(Fragment fragment, String title, String subTitle, View view) {
         ((android.widget.TextView) findViewById(R.id.titulo)).setText(title);
         ((android.widget.TextView) findViewById(R.id.subTitulo)).setText(subTitle);
-        ((android.widget.TextView) findViewById(R.id.valorAplicado)).setText(apliedValue);
+        //((android.widget.TextView) findViewById(R.id.valorAplicado)).setText(apliedValue);
+        getTotalStockValue(view);
 
         FragmentTransaction fragTrans = getSupportFragmentManager().beginTransaction();
         fragTrans.replace(R.id.main_frame, fragment);
@@ -245,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         })));
     }
 
-    public void salvarTransacao(View view) throws Exception
+    public void salvarTransacao(View view, AlertDialog modal) throws Exception
     {
         String stockTransactionType;
 
@@ -254,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
         String boughtDate = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtDataCompra)).getEditText().getText());
         String amount = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtQuantidade)).getEditText().getText());
-        String price = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtPreco)).getEditText().getText());
+        String price = String.valueOf(((TextView) view.findViewById(R.id.txvValorTotal)).getText());
         String otherCosts = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtOutrosCustos)).getEditText().getText());
         int usuarioID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
 
@@ -281,9 +320,8 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if(response.getString("type").equals("Received"))
                     {
-                        setContentView(R.layout.main);
-                        ((BottomNavigationView) findViewById(R.id.navBar)).setSelectedItemId(R.id.btnWallet);
-                        setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
+                        modal.dismiss();
+                        Helpers.alert(view.getContext(), "Sucesso", response.getString("message"), "Ok", true);
                     }
 
                 }
@@ -309,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     Helpers.alert(view.getContext(), "Sucesso", "Ativo Excluido com sucesso.", "Ok", true);
                 }
                 catch (Exception ex) {
-                    Helpers.alert(view.getContext(), "Atenção", "Ocorreu um problema ao excluir o ativo.", "Ok", true);
+                    Helpers.alert(view.getContext(), "Atenção", "Ocorreu um problema ao excluir o ativo." + ex, "Ok", true);
                 }
             }
 
@@ -340,12 +378,14 @@ public class MainActivity extends AppCompatActivity {
                     TextInputLayout txtCodigoAtivo = (TextInputLayout) screen.findViewById(R.id.txtCodigoAtivo);
                     TextInputLayout txtDataCompra = (TextInputLayout) screen.findViewById(R.id.txtDataCompra);
                     TextInputLayout txtQuantidade = (TextInputLayout) screen.findViewById(R.id.txtQuantidade);
+                    TextInputEditText txtQuantidadeET = (TextInputEditText) screen.findViewById(R.id.txtQuantidadeET);
                     TextInputLayout txtPreco = (TextInputLayout) screen.findViewById(R.id.txtPreco);
                     TextInputLayout txtOutrosCustos = (TextInputLayout) screen.findViewById(R.id.txtOutrosCustos);
                     TextView txvValorTotal = (TextView) screen.findViewById(R.id.txvValorTotal);
                     MaterialToolbar btnFecharToolBar = (MaterialToolbar) screen.findViewById(R.id.topBarTransacao);
                     Button btnAlterar = (Button) screen.findViewById(R.id.btnSalvar);
                     Button btnFechar = (Button) screen.findViewById(R.id.btnCancelar);
+                    Button btnProcurar = (Button) screen.findViewById(R.id.btnProcurar);
 
                     String dataCompra = Helpers.dataFormatter(jsonData.getString("createdAt"));
 
@@ -368,6 +408,39 @@ public class MainActivity extends AppCompatActivity {
 
                     final AlertDialog modalAddStock = builder.create();
 
+                    txtQuantidadeET.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            String valor;
+                            Double resultado;
+                            Double quantidade = Double.valueOf(String.valueOf(txtQuantidade.getEditText().getText()));
+                            Double preco = Double.valueOf(String.valueOf(txtPreco.getEditText().getText()));
+
+                            resultado = quantidade * preco;
+                            valor = String.valueOf(resultado);
+
+                            txvValorTotal.setText(valor);
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
+
+                    btnProcurar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getStocksValueApi(screen, String.valueOf(txtCodigoAtivo.getEditText().getText()));
+                        }
+                    });
+
                     btnFecharToolBar.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -378,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
                     btnAlterar.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            updateStock(screen, idStock);
+                            updateStock(screen, idStock, modalAddStock);
                         }
                     });
 
@@ -400,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
         }, "ativosID")));
     }
 
-    public void updateStock(View view, int idStock)
+    public void updateStock(View view, int idStock, AlertDialog modal)
     {
         int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
         String stockTransactionType;
@@ -414,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
         String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
         String boughtDate = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtDataCompra)).getEditText().getText());
         String amount = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtQuantidade)).getEditText().getText());
-        String price = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtPreco)).getEditText().getText());
+        String price = String.valueOf(((TextView) view.findViewById(R.id.txvValorTotal)).getText());
         String otherCosts = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtOutrosCustos)).getEditText().getText());
 
         if(verifyCheckedTransaction)
@@ -454,24 +527,30 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add((new VolleyRequests().sendRequestPUT("/ativos/" + idStock, params, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
-                System.out.println(response);
+                Helpers.alert(view.getContext(), "Sucesso", response.getString("message"), "Ok", true);
+                modal.dismiss();
             }
 
             @Override
             public void onError(JSONObject response) throws JSONException {
-                System.out.println(response);
+                Helpers.alert(view.getContext(), "Erro", response.getString("message"), "Ok", true);
             }
         })));
     }
 
     public void getStocksValueApi(View view, String stockCode)
     {
-        TextInputLayout txtStockCode = ((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo));
+        TextInputLayout txtPrice = ((TextInputLayout) view.findViewById(R.id.txtPreco));
 
         requestQueue.add((new VolleyRequests().sendRequestGET("/bolsavalores/" + stockCode, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
-                System.out.println(response);
+
+                String data = response.getJSONObject("bolsavalores0").getJSONArray("results").getString(0);
+
+                JSONObject jsonData = new JSONObject(data);
+
+                txtPrice.getEditText().setText(jsonData.getString("regularMarketPrice"));
             }
 
             @Override
@@ -481,5 +560,35 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }, "bolsavalores")));
+    }
+
+    public void getTotalStockValue(View view)
+    {
+        int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
+
+        requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + userID, new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                if(response.length() > 0)
+                {
+                    double valorTotalCarteira = 0;
+
+                    for(int i = 0; i < response.length(); i++)
+                    {
+                        JSONObject jsonData = response.getJSONObject("valorTotal" + i);
+
+                        valorTotalCarteira += Double.valueOf(jsonData.getString("preco"));
+                    }
+
+                    TextView txvValorTotalCarteira = (TextView) findViewById(R.id.valorAplicado);
+                    txvValorTotalCarteira.setText(String.valueOf(valorTotalCarteira));
+                }
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(view.getContext(), "Erro", response.getString("message"), "Ok", true);
+            }
+        }, "valorTotal")));
     }
 }

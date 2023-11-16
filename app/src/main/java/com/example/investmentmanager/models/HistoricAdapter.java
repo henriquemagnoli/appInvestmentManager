@@ -50,14 +50,24 @@ public class HistoricAdapter extends RecyclerView.Adapter<HistoricViewHolder>
         {
             holder.type.setTextColor(Color.parseColor("#1C9838"));
             holder.stockCode.setTextColor(Color.parseColor("#1C9838"));
-            dataMovimentacao = Helpers.dataFormatter(historic.getBoughtDate());
+
+            if(historic.getBoughtDate() != null)
+                dataMovimentacao = Helpers.dataFormatter(historic.getBoughtDate());
+            else
+                dataMovimentacao = "Ocorreu um erro ao carregar.";
+
             tipoMovimentacao = "Compra";
         }
         else if(historic.getType().equals("V"))
         {
             holder.type.setTextColor(Color.parseColor("#B52424"));
             holder.stockCode.setTextColor(Color.parseColor("#B52424"));
-            dataMovimentacao = Helpers.dataFormatter(historic.getSoldDate());
+
+            if(historic.getSoldDate() != null)
+                dataMovimentacao = Helpers.dataFormatter(historic.getSoldDate());
+            else
+                dataMovimentacao = "Ocorreu um erro ao carregar.";
+
             tipoMovimentacao = "Venda";
         }
 
