@@ -13,6 +13,6 @@ public interface IRequest
     JsonObjectRequest sendRequestPOST(String path, JSONObject jsonObject, IVolleyCallback callback) throws UnsupportedOperationException;
     JsonArrayRequest sendRequestGET(String path, IVolleyCallback callback, String objectName) throws UnsupportedOperationException;
 
-    StringRequest sendRequestPUT(String path, Map params) throws UnsupportedOperationException;
-    JsonArrayRequest sendRequestDelete(String path, IVolleyCallback callback) throws  UnsupportedOperationException;
+    StringRequest sendRequestPUT(String path, Map params, IVolleyCallback callback) throws UnsupportedOperationException;
+    StringRequest sendRequestDelete(String path, IVolleyCallback callback) throws  UnsupportedOperationException;
 }

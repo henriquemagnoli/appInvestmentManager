@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.investmentmanager.R;
+import com.example.investmentmanager.helpers.Helpers;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -49,14 +50,14 @@ public class HistoricAdapter extends RecyclerView.Adapter<HistoricViewHolder>
         {
             holder.type.setTextColor(Color.parseColor("#1C9838"));
             holder.stockCode.setTextColor(Color.parseColor("#1C9838"));
-            dataMovimentacao = dataFormatter(historic.getBoughtDate());
+            dataMovimentacao = Helpers.dataFormatter(historic.getBoughtDate());
             tipoMovimentacao = "Compra";
         }
         else if(historic.getType().equals("V"))
         {
             holder.type.setTextColor(Color.parseColor("#B52424"));
             holder.stockCode.setTextColor(Color.parseColor("#B52424"));
-            dataMovimentacao = dataFormatter(historic.getSoldDate());
+            dataMovimentacao = Helpers.dataFormatter(historic.getSoldDate());
             tipoMovimentacao = "Venda";
         }
 
@@ -65,20 +66,6 @@ public class HistoricAdapter extends RecyclerView.Adapter<HistoricViewHolder>
         holder.stockMovimentationDate.setText(dataMovimentacao);
         holder.amount.setText("Quantidade: " + historic.getAmount());
         holder.price.setText("Valor total: " + valorFormatado);
-    }
-
-    private String dataFormatter(String dataStock)
-    {
-        Date data  = null;
-
-        try {
-            data = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").parse(dataStock);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dataMovimentacao = new SimpleDateFormat("dd/MM/yyyy").format(data);
-        return dataMovimentacao;
     }
 
     @Override

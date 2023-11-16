@@ -149,7 +149,7 @@ public class VolleyRequests implements IRequest
     }
 
     @Override
-    public StringRequest sendRequestPUT(String path, Map params) throws UnsupportedOperationException
+    public StringRequest sendRequestPUT(String path, Map params, IVolleyCallback callback) throws UnsupportedOperationException
     {
         StringRequest request = new StringRequest(
                 Request.Method.PUT,
@@ -157,13 +157,28 @@ public class VolleyRequests implements IRequest
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+
                         System.out.println(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println(error);
+                        try
+                        {
+                            System.out.println(new String(error.networkResponse.data, "UTF-8"));
+                            JSONObject response = new JSONObject();
+                            response.put("message", "Internal error.");
+                            callback.onError(response);
+                        }
+                        catch (JSONException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
+                        catch (UnsupportedEncodingException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }) {
             @Override
@@ -177,18 +192,16 @@ public class VolleyRequests implements IRequest
     }
 
     @Override
-    public JsonArrayRequest sendRequestDelete(String path, IVolleyCallback callback) throws UnsupportedOperationException
+    public StringRequest sendRequestDelete(String path, IVolleyCallback callback) throws UnsupportedOperationException
     {
-        JsonArrayRequest request = new JsonArrayRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.DELETE,
                 MainActivity.urlApi + path,
-                null,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        JSONObject jsonObject = new JSONObject();
+                    public void onResponse(String response) {
                         try {
-                            jsonObject.put("returnData", response.getJSONObject(0));
+                            JSONObject jsonObject = new JSONObject(response);
                             callback.onSuccess(jsonObject);
                         } catch (JSONException ex) {
                             throw new RuntimeException(ex);
@@ -210,8 +223,8 @@ public class VolleyRequests implements IRequest
                         }
                     }
                 }
-        )
-        {
+        );
+        /*{
             @Override
             public Map<String, String> getHeaders()
             {
@@ -220,7 +233,7 @@ public class VolleyRequests implements IRequest
                 headers.put("Accept", "application/json; charset=utf-8");
                 return headers;
             }
-        };
+        };*/
 
         request.setTag("deleteRequest");
         return request;

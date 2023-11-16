@@ -7,14 +7,17 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +38,15 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public static String urlApi = "http://20.206.160.91:3334";
@@ -68,7 +80,56 @@ public class MainActivity extends AppCompatActivity {
 
     public void screenAddStock(View view)
     {
-        setContentView(R.layout.addstock_screen);
+        View screen = LayoutInflater.from(view.getContext()).inflate(R.layout.addstock_screen, null);
+
+        TextInputLayout txtCodigoAtivo = (TextInputLayout) screen.findViewById(R.id.txtCodigoAtivo);
+        MaterialToolbar btnFecharToolBar = (MaterialToolbar) screen.findViewById(R.id.topBarTransacao);
+        Button btnSalvar = (Button) screen.findViewById(R.id.btnSalvar);
+        Button btnFechar = (Button) screen.findViewById(R.id.btnCancelar);
+
+        // Cria o AlertDialog com o layout personalizado
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.myFullscreenAlertDialogStyle);
+        builder.setView(screen);
+
+        final AlertDialog modalAddStock = builder.create();
+
+        txtCodigoAtivo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                if(!b)
+                    System.out.println("sai");
+            }
+        });
+
+        btnFecharToolBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modalAddStock.dismiss();
+            }
+        });
+
+        btnSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    salvarTransacao(screen);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                modalAddStock.dismiss();
+            }
+        });
+
+        btnFechar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modalAddStock.dismiss();
+            }
+        });
+
+        modalAddStock.show();
     }
 
     public void screenNavBar(View view) {
@@ -189,13 +250,13 @@ public class MainActivity extends AppCompatActivity {
     {
         String stockTransactionType;
 
-        Boolean verifyCheckedTransaction = ((MaterialSwitch) findViewById(R.id.swtTipoTransacao)).isChecked();
-        String stockType = String.valueOf(((TextInputLayout) findViewById(R.id.txtTipoAtivo)).getEditText().getText());;
-        String stockCode = String.valueOf(((TextInputLayout) findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
-        String boughtDate = String.valueOf(((TextInputLayout) findViewById(R.id.txtDataCompra)).getEditText().getText());
-        String amount = String.valueOf(((TextInputLayout) findViewById(R.id.txtQuantidade)).getEditText().getText());
-        String price = String.valueOf(((TextInputLayout) findViewById(R.id.txtPreco)).getEditText().getText());
-        String otherCosts = String.valueOf(((TextInputLayout) findViewById(R.id.txtOutrosCustos)).getEditText().getText());
+        Boolean verifyCheckedTransaction = ((MaterialSwitch) view.findViewById(R.id.swtTipoTransacao)).isChecked();
+        String stockType = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtTipoAtivo)).getEditText().getText());;
+        String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
+        String boughtDate = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtDataCompra)).getEditText().getText());
+        String amount = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtQuantidade)).getEditText().getText());
+        String price = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtPreco)).getEditText().getText());
+        String otherCosts = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtOutrosCustos)).getEditText().getText());
         int usuarioID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
 
         if(verifyCheckedTransaction)
@@ -239,13 +300,6 @@ public class MainActivity extends AppCompatActivity {
         })));
     }
 
-    public void returnWalletScreen(View view)
-    {
-        setContentView(R.layout.main);
-        ((BottomNavigationView) findViewById(R.id.navBar)).setSelectedItemId(R.id.btnWallet);
-        setFragment(new WalletFragment(), "Carteira", "Valor Aplicado", "R$ 1.000,00");
-    }
-
     public void deleteStock(View view, int idStock)
     {
         requestQueue.add((new VolleyRequests().sendRequestDelete("/ativos/" + idStock, new IVolleyCallback() {
@@ -253,17 +307,16 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(JSONObject response) throws JSONException {
                 try
                 {
-                    if(response.getString("type").equals("Received"))
-                        Helpers.alert(MainActivity.this, "Sucesso", response.getString("message"), "Ok", true);
+                    Helpers.alert(view.getContext(), "Sucesso", "Ativo Excluido com sucesso.", "Ok", true);
                 }
                 catch (Exception ex) {
-                    Helpers.alert(MainActivity.this, "Atenção", response.getString("message"), "Ok", true);
+                    Helpers.alert(view.getContext(), "Atenção", "Ocorreu um problema ao excluir o ativo.", "Ok", true);
                 }
             }
 
             @Override
             public void onError(JSONObject response) throws JSONException {
-                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+                Helpers.alert(view.getContext(), "Erro", "Internal server error", "Ok", true);
             }
         })));
     }
@@ -271,15 +324,73 @@ public class MainActivity extends AppCompatActivity {
     public void getStockDataByID(View view, int idStock)
     {
         int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
-
         MainActivity.requestQueue.add((new VolleyRequests().sendRequestGET("/ativos/" + idStock + "/" + userID, new IVolleyCallback() {
             @Override
             public void onSuccess(JSONObject response) throws JSONException {
                 if(response.length() > 0)
                 {
                     JSONObject jsonData = response.getJSONObject("ativosID0");
-                        System.out.println(jsonData);
 
+                    View screen = LayoutInflater.from(view.getContext()).inflate(R.layout.addstock_screen, null);
+
+                    // Formatacao de valor
+                    NumberFormat nf = NumberFormat.getCurrencyInstance();
+
+                    // Captura os id's de cada campo
+                    TextInputLayout txtTipoAtivo = (TextInputLayout) screen.findViewById(R.id.txtTipoAtivo);
+                    TextInputLayout txtCodigoAtivo = (TextInputLayout) screen.findViewById(R.id.txtCodigoAtivo);
+                    TextInputLayout txtDataCompra = (TextInputLayout) screen.findViewById(R.id.txtDataCompra);
+                    TextInputLayout txtQuantidade = (TextInputLayout) screen.findViewById(R.id.txtQuantidade);
+                    TextInputLayout txtPreco = (TextInputLayout) screen.findViewById(R.id.txtPreco);
+                    TextInputLayout txtOutrosCustos = (TextInputLayout) screen.findViewById(R.id.txtOutrosCustos);
+                    TextView txvValorTotal = (TextView) screen.findViewById(R.id.txvValorTotal);
+                    MaterialToolbar btnFecharToolBar = (MaterialToolbar) screen.findViewById(R.id.topBarTransacao);
+                    Button btnAlterar = (Button) screen.findViewById(R.id.btnSalvar);
+                    Button btnFechar = (Button) screen.findViewById(R.id.btnCancelar);
+
+                    String dataCompra = Helpers.dataFormatter(jsonData.getString("createdAt"));
+
+                    // Insere as informacões nos meus text fields
+                    txtTipoAtivo.getEditText().setText(jsonData.getString("tipoativo"));
+                    txtCodigoAtivo.getEditText().setText(jsonData.getString("codigoativo"));
+                    txtDataCompra.getEditText().setText(dataCompra);
+                    txtQuantidade.getEditText().setText(jsonData.getString("quantidade"));
+                    txtPreco.getEditText().setText(jsonData.getString("preco"));
+                    txtOutrosCustos.getEditText().setText(jsonData.getString("outroscustos"));
+                    txvValorTotal.setText(nf.format(Double.parseDouble(jsonData.getString("preco"))));
+
+                    txtTipoAtivo.setEnabled(false);
+                    txtCodigoAtivo.setEnabled(false);
+                    txtDataCompra.setEnabled(false);
+
+                    // Cria o AlertDialog com o layout personalizado
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.myFullscreenAlertDialogStyle);
+                    builder.setView(screen);
+
+                    final AlertDialog modalAddStock = builder.create();
+
+                    btnFecharToolBar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modalAddStock.dismiss();
+                        }
+                    });
+
+                    btnAlterar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            updateStock(screen, idStock);
+                        }
+                    });
+
+                    btnFechar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modalAddStock.dismiss();
+                        }
+                    });
+
+                    modalAddStock.show();
                 }
             }
 
@@ -288,5 +399,87 @@ public class MainActivity extends AppCompatActivity {
                 Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
             }
         }, "ativosID")));
+    }
+
+    public void updateStock(View view, int idStock)
+    {
+        int userID = Integer.parseInt(MainActivity.userIdCache.getString("usuarioID", null));
+        String stockTransactionType;
+        Map<String, String> params = new HashMap<>();
+
+        SimpleDateFormat formatoDataHoraAutal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000Z", Locale.getDefault());
+        String currentTime = formatoDataHoraAutal.format(new Date());
+
+        Boolean verifyCheckedTransaction = ((MaterialSwitch) view.findViewById(R.id.swtTipoTransacao)).isChecked();
+        String stockType = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtTipoAtivo)).getEditText().getText());;
+        String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
+        String boughtDate = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtDataCompra)).getEditText().getText());
+        String amount = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtQuantidade)).getEditText().getText());
+        String price = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtPreco)).getEditText().getText());
+        String otherCosts = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtOutrosCustos)).getEditText().getText());
+
+        if(verifyCheckedTransaction)
+            stockTransactionType = "C";
+        else
+            stockTransactionType = "V";
+
+        Date formatoData = null;
+        try {
+            formatoData = new SimpleDateFormat("dd/MM/yyyy").parse(boughtDate);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        String newBoughtDate = new SimpleDateFormat("yyyy-MM-dd").format(formatoData);
+
+        params.put("tipoativo", stockType);
+        params.put("codigoativo", stockCode);
+
+        if(stockTransactionType.equals("C"))
+        {
+            params.put("datacompra", currentTime);
+            params.put("datavenda", "");
+        }
+        else if(stockTransactionType.equals("V"))
+        {
+            params.put("datacompra", newBoughtDate);
+            params.put("datavenda", currentTime);
+        }
+
+        params.put("quantidade", amount);
+        params.put("preco", price);
+        params.put("outroscustos", otherCosts);
+        params.put("tipo", stockTransactionType);
+        params.put("usuarioID", String.valueOf(userID));
+
+        requestQueue.add((new VolleyRequests().sendRequestPUT("/ativos/" + idStock, params, new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                System.out.println(response);
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                System.out.println(response);
+            }
+        })));
+    }
+
+    public void getStocksValueApi(View view)
+    {
+        String stockCode = String.valueOf(((TextInputLayout) view.findViewById(R.id.txtCodigoAtivo)).getEditText().getText());
+
+        requestQueue.add((new VolleyRequests().sendRequestGET("/bolsavalores/" + stockCode, new IVolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) throws JSONException {
+                System.out.println(response);
+            }
+
+            @Override
+            public void onError(JSONObject response) throws JSONException {
+                Helpers.alert(MainActivity.this, "Erro", response.getString("message"), "Ok", true);
+            }
+
+        }, "bolsavalores")));
     }
 }

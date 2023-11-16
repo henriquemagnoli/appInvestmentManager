@@ -28,8 +28,7 @@
                     app:title="Adicionar Transação"
                     app:titleTextColor="#FFFFFF"
                     app:navigationIcon="@drawable/arrow_back_24px"
-                    app:navigationIconTint="#FFFFFF"
-                    android:onClick="returnWalletScreen"/>
+                    app:navigationIconTint="#FFFFFF"/>
 
             </com.google.android.material.appbar.AppBarLayout>
         </LinearLayout>
@@ -134,7 +133,7 @@
             android:textSize="16dp"/>
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/txvValorTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"

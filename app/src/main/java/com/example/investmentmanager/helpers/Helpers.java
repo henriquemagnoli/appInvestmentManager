@@ -10,6 +10,9 @@ import com.example.investmentmanager.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -226,5 +229,19 @@ public class Helpers
         }
 
         return true;
+    }
+
+    public static String dataFormatter(String dataStock)
+    {
+        Date data  = null;
+
+        try {
+            data = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").parse(dataStock);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        String dataMovimentacao = new SimpleDateFormat("dd/MM/yyyy").format(data);
+        return dataMovimentacao;
     }
 }
